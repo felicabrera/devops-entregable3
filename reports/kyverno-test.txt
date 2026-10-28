@@ -1,0 +1,17 @@
+# Kyverno: prueba de politicas (modo Enforce)
+
+$ kubectl apply -f kyverno/test/pod-no-conforme.yaml
+Error from server: error when creating "kyverno/test/pod-no-conforme.yaml": admission webhook "validate.kyverno.svc-fail" denied the request: 
+
+resource Pod/default/pod-no-conforme was blocked due to the following policies 
+
+disallow-latest-tag:
+  validate-image-tag-not-latest: 'validation error: No se permite usar la etiqueta latest en las imagenes. rule validate-image-tag-not-latest failed at path /spec/containers/0/image/'
+disallow-root-containers:
+  no-run-as-user-zero: 'validation error: runAsUser no puede ser 0 (root). rule no-run-as-user-zero failed at path /spec/containers/0/securityContext/runAsUser/'
+  run-as-non-root: 'validation error: Los contenedores no pueden ejecutarse como root: defina securityContext.runAsNonRoot: true. rule run-as-non-root[0] failed at path /spec/securityContext/runAsNonRoot/ rule run-as-non-root[1] failed at path /spec/containers/0/securityContext/runAsNonRoot/'
+require-requests-limits:
+  validate-resources: 'validation error: Todos los contenedores deben definir resources.requests y resources.limits de cpu y memory. rule validate-resources failed at path /spec/containers/0/resources/limits/'
+
+$ kubectl apply -f kyverno/test/pod-conforme.yaml
+pod/pod-conforme created

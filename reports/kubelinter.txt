@@ -1,0 +1,5 @@
+# KubeLinter 0.8.3: kube-linter lint k8s/ kyverno/policies kyverno/test/pod-conforme.yaml
+KubeLinter 0.8.3
+
+No lint errors found!
+exit code: 0

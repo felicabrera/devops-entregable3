@@ -1,0 +1,24 @@
+# Falco en Docker Desktop (kernel linuxkit con BTF): driver modern eBPF
+driver:
+  kind: modern_ebpf
+tty: true
+falcosidekick:
+  enabled: false
+collectors:
+  kubernetes:
+    enabled: false
+# Regla adicional: en containerd, la macro container_entrypoint de la regla por
+# defecto no coincide con los procesos creados por kubectl exec
+customRules:
+  qoxit-rules.yaml: |-
+    - rule: Shell interactiva en contenedor (kubectl exec)
+      desc: Se abrio una shell con terminal asociada dentro de un contenedor
+      condition: >
+        spawned_process and container and shell_procs and proc.tty != 0
+      output: >
+        Shell interactiva abierta en un contenedor
+        (user=%user.name pod=%k8s.pod.name ns=%k8s.ns.name
+        container=%container.name image=%container.image.repository:%container.image.tag
+        shell=%proc.name parent=%proc.pname cmdline=%proc.cmdline terminal=%proc.tty)
+      priority: WARNING
+      tags: [container, shell, mitre_execution]

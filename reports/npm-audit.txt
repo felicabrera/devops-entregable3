@@ -1,0 +1,12 @@
+# npm audit
+# El proyecto es Python/FastAPI y no tiene package.json: npm audit no aplica.
+# $ npm audit (resultado real)
+npm error code ENOLOCK
+npm error audit This command requires an existing lockfile.
+npm error audit Try creating one first with: npm i --package-lock-only
+npm error audit Original error: loadVirtual requires existing shrinkwrap file
+npm error A complete log of this run can be found in: /Users/felipe/.npm/_logs/2026-10-28T21_38_31_047Z-debug-0.log
+
+# Equivalente para el ecosistema Python: pip-audit sobre requirements.txt
+# $ pip-audit -r requirements.txt
+No known vulnerabilities found

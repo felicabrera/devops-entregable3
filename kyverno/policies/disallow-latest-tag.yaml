@@ -1,0 +1,45 @@
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: disallow-latest-tag
+  annotations:
+    policies.kyverno.io/title: Prohibir la etiqueta latest
+    policies.kyverno.io/category: Best Practices
+    policies.kyverno.io/severity: medium
+    policies.kyverno.io/description: >-
+      Las imagenes deben declarar una etiqueta explicita distinta de latest
+      para que los despliegues sean reproducibles y auditables.
+spec:
+  validationFailureAction: Enforce
+  background: true
+  rules:
+    - name: require-image-tag
+      match:
+        any:
+          - resources:
+              kinds: ["Pod"]
+      exclude:
+        any:
+          - resources:
+              namespaces: ["kube-system", "kyverno", "local-path-storage", "falco"]
+      validate:
+        message: "Las imagenes deben tener una etiqueta explicita (no se permite imagen sin etiqueta)."
+        pattern:
+          spec:
+            containers:
+              - image: "*:*"
+    - name: validate-image-tag-not-latest
+      match:
+        any:
+          - resources:
+              kinds: ["Pod"]
+      exclude:
+        any:
+          - resources:
+              namespaces: ["kube-system", "kyverno", "local-path-storage", "falco"]
+      validate:
+        message: "No se permite usar la etiqueta latest en las imagenes."
+        pattern:
+          spec:
+            containers:
+              - image: "!*:latest"

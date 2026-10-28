@@ -1,0 +1,3 @@
+# Falco 0.45.1 (driver modern eBPF). Accion: kubectl exec -it devops-app-blue-... -- /bin/bash
+# kubectl -n falco logs ds/falco -c falco | grep 'Shell interactiva'
+22:07:17.324161185: Warning Shell interactiva abierta en un contenedor (user=<NA> pod=devops-app-blue-6c964db59b-fsfxx ns=default container=devops-app image=docker.io/library/devops-app:v1 shell=bash parent=kube-scheduler cmdline=bash terminal=34816) container_id=53ab6eb3f06c container_name=devops-app container_image_repository=docker.io/library/devops-app container_image_tag=v1 k8s_pod_name=devops-app-blue-6c964db59b-fsfxx k8s_ns_name=default

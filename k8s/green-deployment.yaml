@@ -1,0 +1,69 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: devops-app-green
+  annotations:
+    ignore-check.kube-linter.io/no-anti-affinity: "Cluster local de un solo nodo (Docker Desktop): la anti-afinidad no aplica"
+  labels:
+    app: devops-app
+    version: green
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: devops-app
+      version: green
+  template:
+    metadata:
+      labels:
+        app: devops-app
+        version: green
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 10001
+        runAsGroup: 10001
+        fsGroup: 10001
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: devops-app
+          image: devops-app:v2
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8000
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 256Mi
+          volumeMounts:
+            - name: data
+              mountPath: /data
+          env:
+            - name: APP_VERSION
+              value: "v2.0.0"
+            - name: APP_COLOR
+              value: "green"
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 3
+            periodSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 5
+            periodSeconds: 10
+      volumes:
+        - name: data
+          emptyDir: {}

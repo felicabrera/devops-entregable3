@@ -1,0 +1,11 @@
+groups:
+  - name: notes-api
+    rules:
+      # Mas de 10 notas creadas en una ventana de 5 minutos (X=10, Y=5)
+      - alert: MuchasNotasCreadas
+        expr: sum(increase(notes_created_total[5m])) > 10
+        labels:
+          severity: warning
+        annotations:
+          summary: "Se crearon mas de 10 notas en 5 minutos"
+          description: "Notas creadas en los ultimos 5 minutos: {{ $value }}"

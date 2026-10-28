@@ -1,0 +1,11 @@
+# Pod intencionalmente no conforme: viola las tres politicas
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pod-no-conforme
+spec:
+  containers:
+    - name: nginx
+      image: nginx:latest
+      securityContext:
+        runAsUser: 0
